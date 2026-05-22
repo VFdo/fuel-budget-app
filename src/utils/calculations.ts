@@ -1,5 +1,5 @@
 import { getFuelProduct } from '../constants/fuelPrices'
-import type { BudgetInputs, BudgetResults, BudgetStatus } from '../types/budget'
+import type { BudgetInputs, BudgetResults, BudgetStatus, FuelProduct } from '../types/budget'
 
 export const APPROACHING_THRESHOLD = 75
 export const CRITICAL_THRESHOLD = 95
@@ -10,8 +10,11 @@ export function getBudgetStatus(usagePercentage: number, isOverBudget: boolean):
   return 'on_track'
 }
 
-export function calculateBudget(inputs: BudgetInputs): BudgetResults {
-  const { pricePerLiter } = getFuelProduct(inputs.fuelType)
+export function calculateBudget(
+  inputs: BudgetInputs,
+  products: FuelProduct[],
+): BudgetResults {
+  const { pricePerLiter } = getFuelProduct(inputs.fuelType, products)
   const monthlyBudgetLkr = Math.max(0, inputs.monthlyBudgetLkr)
   const litersUsed = Math.max(0, inputs.litersUsed)
   const totalCost = litersUsed * pricePerLiter

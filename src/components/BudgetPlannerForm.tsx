@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useFuelPricesContext } from '../context/FuelPricesContext'
 import { useBudgetStorage } from '../hooks/useBudgetStorage'
 import { calculateBudget } from '../utils/calculations'
 import { BudgetDashboard } from './BudgetDashboard'
@@ -7,26 +8,43 @@ import { Card } from './Card'
 import { FuelTypeSelect } from './FuelTypeSelect'
 import { NumberInput } from './NumberInput'
 
+function PricesLoadingSkeleton() {
+  return (
+    <div className="mx-auto w-full max-w-md animate-pulse space-y-4">
+      <div className="h-48 rounded-2xl bg-slate-200 dark:bg-slate-800" />
+      <div className="h-64 rounded-2xl bg-slate-200 dark:bg-slate-800" />
+    </div>
+  )
+}
+
 export function BudgetPlannerForm() {
   const { state, update, hydrated } = useBudgetStorage()
+  const { products, status } = useFuelPricesContext()
+
+  const pricesReady = products.length > 0
 
   const results = useMemo(
     () =>
-      calculateBudget({
-        fuelType: state.fuelType,
-        monthlyBudgetLkr: state.monthlyBudgetLkr === '' ? 0 : state.monthlyBudgetLkr,
-        litersUsed: state.litersUsed === '' ? 0 : state.litersUsed,
-      }),
-    [state.fuelType, state.monthlyBudgetLkr, state.litersUsed],
+      pricesReady
+        ? calculateBudget(
+            {
+              fuelType: state.fuelType,
+              monthlyBudgetLkr:
+                state.monthlyBudgetLkr === '' ? 0 : state.monthlyBudgetLkr,
+              litersUsed: state.litersUsed === '' ? 0 : state.litersUsed,
+            },
+            products,
+          )
+        : null,
+    [state.fuelType, state.monthlyBudgetLkr, state.litersUsed, products, pricesReady],
   )
 
-  if (!hydrated) {
-    return (
-      <div className="mx-auto w-full max-w-md animate-pulse space-y-4">
-        <div className="h-48 rounded-2xl bg-slate-200 dark:bg-slate-800" />
-        <div className="h-64 rounded-2xl bg-slate-200 dark:bg-slate-800" />
-      </div>
-    )
+  if (!hydrated || (status === 'loading' && !pricesReady)) {
+    return <PricesLoadingSkeleton />
+  }
+
+  if (!results) {
+    return <PricesLoadingSkeleton />
   }
 
   return (
@@ -38,7 +56,9 @@ export function BudgetPlannerForm() {
       <Card className="space-y-4">
         <FuelTypeSelect
           value={state.fuelType}
+          products={products}
           onChange={(v) => update('fuelType', v)}
+          disabled={status === 'loading'}
         />
         <NumberInput
           id="monthly-budget"
