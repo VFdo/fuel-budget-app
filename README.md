@@ -1,4 +1,4 @@
-# Fuel Budget Planner v1.0.0
+# Fuel Budget Planner
 ## Track your monthly fuel spending in Sri Lanka
 
 A mobile-first web app that helps you stay on top of your monthly fuel budget using current Sri Lankan fuel prices.
