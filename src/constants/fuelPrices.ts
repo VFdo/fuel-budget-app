@@ -3,11 +3,11 @@ import type { FuelPricesApi } from '../types/fuelPrices'
 
 /** Used when the API is unreachable and no cache exists */
 export const FALLBACK_FUEL_PRICES: FuelPricesApi = {
-  petrol92: 410,
-  petrol95: 470,
-  diesel: 392,
-  superDiesel: 458,
-  updatedAt: '2026-05-02',
+  petrol92: 434,
+  petrol95: 495,
+  diesel: 407,
+  superDiesel: 478,
+  updatedAt: '2026-05-30',
 }
 
 type FuelPriceKey = 'petrol92' | 'petrol95' | 'diesel' | 'superDiesel'
