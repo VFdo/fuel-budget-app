@@ -1,8 +1,9 @@
 import axios from 'axios'
 import * as cheerio from 'cheerio'
 import type { AnyNode } from 'domhandler'
-import { CPC_FUEL_PRICING_URL } from '../constants/fallbackPrices.js'
 import type { FuelPriceField, FuelPrices } from '../types/fuelPrices.js'
+
+const CPC_FUEL_PRICING_URL = 'https://ceypetco.gov.lk/marketing-sales/'
 
 const FUEL_NAME_TO_FIELD: Record<string, FuelPriceField> = {
   'lanka petrol 92 octane': 'petrol92',
